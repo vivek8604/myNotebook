@@ -1,7 +1,7 @@
 const connecToMongo=require('./db')
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 5000
 connecToMongo() //connecting to the database
 app.use(express.json()) //it is middleware to access the req.body it parse the incoming request into json
 // Avialable routes
