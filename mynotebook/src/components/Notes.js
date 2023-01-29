@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react'
 import noteContext from '../context/notes/noteContext'
+import Addnote from './Addnote'
 import Noteitem from './Noteitem'
-
 const Notes = () => {
     const context = useContext(noteContext)
-    const { notes, setNotes } = context
+    const { notes,addNote } = context
     return (
         <>
+          <Addnote/>
             <div className='my-4'>
                 <h3>Your Notes</h3>
                 <div className="row my-2">
