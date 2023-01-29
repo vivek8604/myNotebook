@@ -84,8 +84,11 @@ const NoteState=(props)=>{
     setNotes(notes.concat(note)) //.concat return a new array
   }
   // delete a note function
-  const deleteNote=()=>{
-    
+  const deleteNote=(id)=>{
+    // API call todo
+    // console.log("deleting the note with id"+ id);
+    const newNote=notes.filter((note)=>{return note._id!==id}) //this logic means that if id!==note._id then it should be inside the notes state otherwise it will get replaced
+    setNotes(newNote);
   }
   // edit a note function
   const editNote=()=>{
