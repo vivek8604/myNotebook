@@ -15,7 +15,6 @@ const NoteState = (props) => {
         'Content-Type': 'application/json',
         'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNjMTM2YTAzMDFlOWFjZmEzNTRiNThkIn0sImlhdCI6MTY3MzgwMTkxNX0.1sVXWSAdWNNdzXxrGzuKxKqZ6KQYkp4BqFlXVLNO8AY'
       },
-      // body:JSON.stringify()
     });
     const json =await response.json();
     console.log(json)
@@ -46,8 +45,18 @@ const NoteState = (props) => {
     setNotes(notes.concat(note)) //.concat return a new array
   }
   // delete a note function
-  const deleteNote = (id) => {
+  const deleteNote = async(id) => {
     // API call todo
+    const response = await fetch(`${host}api/note/deletenote/${id}`, {
+      method: 'DELETE',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjNjMTM2YTAzMDFlOWFjZmEzNTRiNThkIn0sImlhdCI6MTY3MzgwMTkxNX0.1sVXWSAdWNNdzXxrGzuKxKqZ6KQYkp4BqFlXVLNO8AY'
+      }
+    });
+    const json =await response.json();
+    console.log(json)
     // console.log("deleting the note with id"+ id);
     const newNote = notes.filter((note) => { return note._id !== id }) //this logic means that if id!==note._id then it should be inside the notes state otherwise it will get replaced
     setNotes(newNote);
