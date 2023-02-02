@@ -52,6 +52,7 @@ body('email','enter a valid email').isEmail(),// username must be an email
 body('password','password can not be blank').exists(),// password cannot be blank
 
 ],async(req,res)=>{
+  let success=false;
   //if there are error return bad request and error
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -61,12 +62,14 @@ body('password','password can not be blank').exists(),// password cannot be blan
   // cheack wheather email belong to database or not
   let user =await User.findOne({email:req.body.email})
   if(!user){
-    return res.status(404).json({err:"Please try to login with correct crediential"})
+    success=false
+    return res.status(404).json({success,err:"Please try to login with correct crediential"})
   }
   const {email,password}=req.body
   const passwordCompare=await bcrypt.compare(password,user.password)    
   if(!passwordCompare){
-    return res.status(404).json({err:"Please try to login with correct crediential"})
+    success=false
+    return res.status(404).json({success,err:"Please try to login with correct crediential"})
   }
   // seonding payload using jwt
   const data={
@@ -75,7 +78,8 @@ body('password','password can not be blank').exists(),// password cannot be blan
     }
   }
   const authtoken =jwt.sign(data,JWT_SECRET)
-  res.json({authtoken})
+  success = true;
+  res.json({ success, authtoken })
   } catch (error) {
     console.error(error.message)
     res.status(500).send("Some error occured")

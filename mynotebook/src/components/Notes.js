@@ -4,23 +4,25 @@ import Addnote from './Addnote'
 import Noteitem from './Noteitem'
 const Notes = () => {
     const context = useContext(noteContext)
-    const { notes, getNote } = context
-    const [note, setNote] = useState({etitle: "", edescription: "", etag: ""})
+    const { notes, getNote,editNote } = context
+    const [note, setNote] = useState({id:"",etitle: "", edescription: "", etag: ""})
     useEffect(() => {
         getNote()
         // eslint-disable-next-line
     }, [])
     const ref = useRef(null)
+    const refClose = useRef(null)
     const updateNote = (currentNote) => {
         // `current` points to the mounted text input element
         ref.current.click();
-         setNote({etitle: currentNote.title, edescription: currentNote.description, etag:currentNote.tag})
+         setNote({id:currentNote._id,etitle: currentNote.title, edescription: currentNote.description, etag:currentNote.tag})
     };
     const onChange = (e) => {
         setNote({ ...note, [e.target.name]: e.target.value }) // this means take the existing note and overwrite it when there is onChange event
     }
     const handleClick = (e) => {
-        e.preventDefault();
+        editNote(note.id,note.etitle,note.edescription,note.etag)
+        refClose.current.click();
         console.log("updating the note ", note)
     }
     return (
@@ -29,7 +31,7 @@ const Notes = () => {
             <Addnote />
 
             <div className='my-4'>
-                <button ref={ref} type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                <button ref={ref} type="button" className="btn btn-primary d-none" data-toggle="modal" data-target="#exampleModal">
                     Launch demo modal
                 </button>
 
@@ -46,11 +48,11 @@ const Notes = () => {
                                 <form>
                                     <div className="form-group my-3">
                                         <label htmlFor="etitle">Note Title</label>
-                                        <input value={note.etitle} type="text" className="form-control" id="etitle" name='etitle' aria-describedby="emailHelp" placeholder="Enter Your Title" onChange={onChange} />
+                                        <input  minLength={5} required value={note.etitle} type="text" className="form-control" id="etitle" name='etitle' aria-describedby="emailHelp" placeholder="Enter Your Title" onChange={onChange} />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="description">Note Description</label>
-                                        <input type="text" value={note.edescription}  className="form-control" id="edescription" name='edescription' placeholder="Enter your description" onChange={onChange} />
+                                        <input minLength={5} required type="text" value={note.edescription}  className="form-control" id="edescription" name='edescription' placeholder="Enter your description" onChange={onChange} />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="tag">Note Tag</label>
@@ -60,15 +62,21 @@ const Notes = () => {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" onClick={handleClick} className="btn btn-primary">Edit </button>
+                                <button ref={refClose} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button"disabled={note.etitle.length<5||note.edescription.length<5}  onClick={handleClick} className="btn btn-primary">Edit </button>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div className="container">
+
                 <h3>Your Notes</h3>
+                </div>
                 <div className="row my-2">
                     {/* // all added notes will be here */}
+                    <div class='container'>
+                    <p>{notes.length===0 &&"NO notes to Display"}</p>
+                    </div>
                     {notes.map((note) => {
                         return <Noteitem key={note._id} note={note} updateNote={updateNote} />
                         // here sending a prop to noteitem component
