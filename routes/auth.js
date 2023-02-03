@@ -15,15 +15,18 @@ router.post('/createuser',[
   body('password','password shold not be less than 3 character').isLength({ min: 5 }),// password must be at least 5 chars long
 ],async(req,res)=>{
   //if there are error return bad request and error
+  let success=false;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    success=false;
+    return res.status(400).json({success, errors: errors.array() });
   }
   try {
     // cheack wheather email exists already
   let user =await User.findOne({email:req.body.email})
   if(user){
-    return res.status(404).json({err:"Sorry a user with email already exists"})
+    success=false;
+    return res.status(404).json({success,err:"Sorry a user with email already exists"})
   }
   const  salt = await bcrypt.genSalt(10); //it retun a pramoise so we will use wait
 
@@ -40,10 +43,11 @@ user=await User.create({
   }
   const authtoken =jwt.sign(data,JWT_SECRET)
   console.log(authtoken)
-  res.send({authtoken:authtoken})
+  success=true;
+  res.send({success,authtoken:authtoken})
   } catch (error) {
     console.error(error.message)
-    res.status(500).send("Some error occured")
+    res.status(500).send(success,"Some error occured")
   }
 })
 // Route 2 authenticate a user usig post /api/auth/login No auth is required creating a user no login required

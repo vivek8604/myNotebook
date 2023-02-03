@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import noteContext from '../context/notes/noteContext'
 import Addnote from './Addnote'
 import Noteitem from './Noteitem'
-const Notes = () => {
+const Notes = (props) => {
     const context = useContext(noteContext)
     const { notes, getNote,editNote } = context
     const [note, setNote] = useState({id:"",etitle: "", edescription: "", etag: ""})
@@ -16,6 +16,7 @@ const Notes = () => {
         // `current` points to the mounted text input element
         ref.current.click();
          setNote({id:currentNote._id,etitle: currentNote.title, edescription: currentNote.description, etag:currentNote.tag})
+        
     };
     const onChange = (e) => {
         setNote({ ...note, [e.target.name]: e.target.value }) // this means take the existing note and overwrite it when there is onChange event
@@ -23,12 +24,13 @@ const Notes = () => {
     const handleClick = (e) => {
         editNote(note.id,note.etitle,note.edescription,note.etag)
         refClose.current.click();
-        console.log("updating the note ", note)
+        // console.log("updating the note ", note)
+        props.showAlert("updated successfully","success")
     }
     return (
         <>
 
-            <Addnote />
+            <Addnote showAlert ={props.showAlert} />
 
             <div className='my-4'>
                 <button ref={ref} type="button" className="btn btn-primary d-none" data-toggle="modal" data-target="#exampleModal">
@@ -78,7 +80,7 @@ const Notes = () => {
                     <p>{notes.length===0 &&"NO notes to Display"}</p>
                     </div>
                     {notes.map((note) => {
-                        return <Noteitem key={note._id} note={note} updateNote={updateNote} />
+                        return <Noteitem key={note._id} note={note} updateNote={updateNote} showAlert={props.showAlert} />
                         // here sending a prop to noteitem component
                     })}
                 </div>
