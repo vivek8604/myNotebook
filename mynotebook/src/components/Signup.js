@@ -21,7 +21,7 @@ const Signup = (props) => {
         console.log(json)
         if(json.success===true){
           localStorage.setItem("auth-token",json.authtoken)
-          navigate("/");
+          navigate("/login");
           props.showAlert("you had successfully signup","success")
         }
         else{
